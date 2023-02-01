@@ -22,3 +22,6 @@ This app currently has no state management, but we'll probably use Vuex or anoth
 
 ## API
 This browser client uses an AI-powered API [Insert Github Link Here]. Shout-out to my man Squids.
+
+## Dev Stack
+This client is a Vue3 project using SCSS and JS. In the future it may additionally use TypeScript, Tailwind CSS, VueRouter, Vuex, Etc.

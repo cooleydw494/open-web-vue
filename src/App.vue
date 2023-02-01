@@ -1,11 +1,11 @@
 <template>
   <div class="page">
     <div class="flex-center">
-      <img class="logo" src="../src/assets/images/logo.jpeg" alt="Open Web Logo">
+      <img class="logo" :class="{'rotate': submittingQuery}" src="../src/assets/images/logo.jpeg" alt="Open Web Logo">
       <div class="search-container">
-        <input v-model="searchValue" :placeholder="placeholder" @keyup.enter="submitQuery" />
+        <input v-model="searchValue" :placeholder="placeholder" @keyup.enter="submitQuery" :disabled="submittingQuery" />
       </div>
-      <div class="response" v-if="searchResponse">
+      <div class="response" v-if="searchResponse && !submittingQuery">
         <p>{{ searchResponse }}</p>
       </div>
     </div>
@@ -18,6 +18,7 @@ export default {
     return {
       searchValue: "",
       searchResponse: "",
+      submittingQuery: false,
       randomPlaceholders: ["Are NFTs dead?",
         "Who is Gary Vee and how is he so good at drawing?",
         "How do you mint an NFT?",
@@ -36,8 +37,11 @@ export default {
   },
   methods: {
     async submitQuery() {
+      this.submittingQuery = true
       if (window.location.hostname === 'localhost') {
+        await this.sleep(1500)
         this.searchResponse = this.testResponse
+        this.submittingQuery = false
         return
       }
       try {
@@ -51,6 +55,7 @@ export default {
       } catch (err) {
         console.error(err)
       }
+      this.submittingQuery = false
     },
     randomPlaceholder() {
       const randomIndex = Math.floor(Math.random() * this.randomPlaceholders.length)
@@ -64,37 +69,53 @@ export default {
 
 #app {
 
-  .page {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-  }
-
   .flex-center {
     display: flex;
     flex-direction: column;
     justify-content: center;
     place-items: center;
     height: 100%;
+    width: 100%;
+    max-width: 46rem;
+    margin: 0 1rem;
+
+    @media(max-width: 768px) {
+      max-width: 100%;
+    }
+
 
     .logo {
       width: 16rem;
       margin-bottom: 2rem;
+
+      &.rotate {
+        animation: pulse 1s ease-in-out infinite;
+        @keyframes pulse {
+          0% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.25;
+          }
+          100% {
+            opacity: 1;
+          }
+        }
+      }
     }
 
     .search-container {
-      display: flex;
-      width: 42rem;
-      justify-content: space-around;
-      align-items: center;
+      width: 100%;
+
+      @media(max-width: 768px) {
+        width: 100%;
+      }
 
       input {
         border-radius: .5rem;
-        width: 36rem;
+        width: 100%;
         height: 2rem;
-        padding: 0 .5rem;
+        padding: .5rem;
         font-size: medium;
       }
     }
@@ -102,13 +123,25 @@ export default {
     .response {
       margin-top: 1rem;
       border-radius: .5rem;
-      width: 36rem;
+      width: 100%;
       padding: .5rem;
       font-size: medium;
       font-weight: bold;
       background-color: #42b983;
       color: black;
+
+      @media(max-width: 768px) {
+        width: 100%;
+      }
     }
+  }
+
+  .page {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
   }
 }
 
